@@ -8,10 +8,18 @@ using System.Collections;
 
 namespace SearchOutlets.Datastores
 {
-    public class ProfileData
+    /// <summary>
+    /// Represents the profile datastore.
+    /// 
+    /// "In real life" this would be an index, database, etc.
+    /// </summary>
+    public class ProfileDatastore
     {
-        private Dictionary<int, Models.Contact> Profiles { get; set; }
+        public Dictionary<int, Models.Contact> ProfileData { get; set; }
 
+        /// <summary>
+        /// Read the Contacts.json file into an in-memory datastore
+        /// </summary>
         public void Load()
         {
             List<Models.Contact> contacts;
@@ -24,7 +32,7 @@ namespace SearchOutlets.Datastores
 
             foreach (Models.Contact contact in contacts)
             {
-                Profiles.Add(contact.Id(), contact);
+                ProfileData.Add(contact.Id, contact);
             }
         }
     }
