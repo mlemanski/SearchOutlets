@@ -12,6 +12,9 @@ namespace SearchOutlets.Controllers
     /// </summary>
     public class ProfileController : ApiController
     {
-
+        public List<Models.Contact> GetAllContacts()
+        {
+            return new List<Models.Contact>(Datastores.ProfileDatastore.Instance.ProfileData.Values);
+        }
     }
 }

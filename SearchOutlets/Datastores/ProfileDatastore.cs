@@ -15,6 +15,28 @@ namespace SearchOutlets.Datastores
     /// </summary>
     public class ProfileDatastore
     {
+        private static ProfileDatastore instance;
+
+        // private constructor to support the singleton model
+        private ProfileDatastore() { }
+
+        // return the single instance of ProfileDatastore, initializing if necessary
+        public static ProfileDatastore Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new ProfileDatastore();
+                    instance.Load();
+                }
+
+                return instance;
+            }
+        }
+
+
+
         public Dictionary<int, Models.Contact> ProfileData { get; set; }
 
         /// <summary>
