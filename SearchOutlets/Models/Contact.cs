@@ -10,11 +10,50 @@ namespace SearchOutlets.Models
     /// </summary>
     public class Contact
     {
-        private int Id { get; set; }
-        private int OutletId { get; set; } // only 1 Outlet
-        private string FirstName { get; set; }
-        private string LastName { get; set; }
-        private string Title { get; set; }
-        private string Profile { get; set; }
+        private int id;
+        private int outletId; // only 1 Outlet
+        private string firstName;
+        private string lastName;
+        private string title;
+        private string profile;
+
+
+        // properties
+
+        public int Id
+        {
+            get { return id; }
+            set { id = value; }
+        }
+
+        public int OutletId
+        {
+            get { return outletId; }
+            set { outletId = value; }
+        }
+
+        public string FirstName
+        {
+            get { return firstName; }
+            set { firstName = value; }
+        }
+
+        public string LastName
+        {
+            get { return lastName; }
+            set { lastName = value; }
+        }
+
+        public string Title
+        {
+            get { return title; }
+            set { title = value; }
+        }
+
+        public string Profile
+        {
+            get { return profile; }
+            set { profile = value; }
+        }
     }
 }
