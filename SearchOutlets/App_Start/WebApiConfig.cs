@@ -13,7 +13,7 @@ namespace SearchOutlets
 
             config.Routes.MapHttpRoute(
                 name: "SearchOutletsApi",
-                routeTemplate: "api/{controller}/{id}",
+                routeTemplate: "{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
         }
