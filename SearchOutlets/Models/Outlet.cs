@@ -26,5 +26,6 @@ namespace SearchOutlets.Models
         {
             get { return name; }
             set { name = value; }
+        }
     }
 }
