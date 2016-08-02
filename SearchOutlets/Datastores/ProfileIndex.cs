@@ -2,7 +2,9 @@
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
+using Lucene.Net.Search;
 using Lucene.Net.Store;
+using SearchOutlets.Models;
 using SearchOutlets.Models.JSON;
 using System.Collections.Generic;
 
@@ -14,6 +16,18 @@ namespace SearchOutlets.Datastores
     /// </summary>
     public class ProfileIndex
     {
+        private static class ContactField
+        {
+            public static string ID = "id";
+            public static string OUTLET_ID = "outletId";
+            public static string OUTLET = "outlet";
+            public static string FIRST_NAME = "firstName";
+            public static string LAST_NAME = "lastName";
+            public static string TITLE = "title";
+            public static string PROFILE = "profile";
+        }
+
+
         // the single instance
         private static ProfileIndex instance;
 
@@ -53,18 +67,18 @@ namespace SearchOutlets.Datastores
             Analyzer analyzer = new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30);
             IndexWriter writer = new IndexWriter(directory, analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
 
-            Dictionary<int, Outlet> outlets = new JsonDataParser<Outlet>().LoadProfileDataMap();
+            Dictionary<int, JsonOutlet> outlets = new JsonDataParser<JsonOutlet>().LoadProfileDataMap();
 
-            foreach (Contact contact in new JsonDataParser<Contact>().LoadProfileData())
+            foreach (JsonContact contact in new JsonDataParser<JsonContact>().LoadProfileData())
             {
                 Document d = new Document();
-                d.Add(new Field("id", contact.Id.ToString(), Field.Store.YES, Field.Index.NO));
-                d.Add(new Field("outletId", contact.OutletId.ToString(), Field.Store.NO, Field.Index.NO));
-                d.Add(new Field("outlet", outlets[contact.OutletId].Name, Field.Store.YES, Field.Index.ANALYZED));
-                d.Add(new Field("firstName", contact.FirstName, Field.Store.YES, Field.Index.NOT_ANALYZED));
-                d.Add(new Field("lastName", contact.LastName, Field.Store.YES, Field.Index.NOT_ANALYZED));
-                d.Add(new Field("title", contact.Title, Field.Store.YES, Field.Index.ANALYZED));
-                d.Add(new Field("profile", contact.Profile, Field.Store.YES, Field.Index.ANALYZED));
+                d.Add(new Field(ContactField.ID,         contact.Id.ToString(),          Field.Store.YES, Field.Index.NO));
+                d.Add(new Field(ContactField.OUTLET_ID,  contact.OutletId.ToString(),    Field.Store.NO,  Field.Index.NO));
+                d.Add(new Field(ContactField.OUTLET,     outlets[contact.OutletId].Name, Field.Store.YES, Field.Index.ANALYZED));
+                d.Add(new Field(ContactField.FIRST_NAME, contact.FirstName,              Field.Store.YES, Field.Index.NOT_ANALYZED));
+                d.Add(new Field(ContactField.LAST_NAME,  contact.LastName,               Field.Store.YES, Field.Index.NOT_ANALYZED));
+                d.Add(new Field(ContactField.TITLE,      contact.Title,                  Field.Store.YES, Field.Index.ANALYZED));
+                d.Add(new Field(ContactField.PROFILE,    contact.Profile,                Field.Store.YES, Field.Index.ANALYZED));
                 writer.AddDocument(d);
             }
 
@@ -81,7 +95,25 @@ namespace SearchOutlets.Datastores
         /// <returns></returns>
         public List<Contact> GetAllContacts()
         {
-            directory.ListAll();
+            IndexSearcher searcher = new IndexSearcher(directory, true); // true means read-only
+            MatchAllDocsQuery queryAll = new MatchAllDocsQuery();
+            TopScoreDocCollector collector = TopScoreDocCollector.Create(100, false); // top 100 results, unsorted
+            ScoreDoc[] scoredDocs = collector.TopDocs().ScoreDocs;
+
+            // convert the top results to Contact objects, to be displayed at the GUI
+            List<Contact> results = new List<Contact>(scoredDocs.Length);
+            foreach (ScoreDoc scoreDoc in scoredDocs)
+            {
+                Document doc = searcher.Doc(scoreDoc.Doc);
+                Contact contact = new Contact();
+                contact.Name = doc.Get(ContactField.FIRST_NAME) + " " + doc.Get(ContactField.LAST_NAME);
+                contact.Title = doc.Get(ContactField.TITLE);
+                contact.Outlet = doc.Get(ContactField.OUTLET);
+                contact.Profile = doc.Get(ContactField.PROFILE);
+                results.Add(contact);
+            }
+
+            return results;
         }
     }
 }
