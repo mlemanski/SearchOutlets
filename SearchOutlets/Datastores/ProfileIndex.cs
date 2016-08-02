@@ -2,6 +2,7 @@
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
+using Lucene.Net.QueryParsers;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
 using SearchOutlets.Models;
@@ -16,6 +17,8 @@ namespace SearchOutlets.Datastores
     /// </summary>
     public class ProfileIndex
     {
+        private const string INDEX_NAME = "ContactIndex";
+
         private static class ContactField
         {
             public static string ID = "id";
@@ -32,14 +35,15 @@ namespace SearchOutlets.Datastores
         private static ProfileIndex instance;
 
 
-        // Lucene index objects
+        // Lucene index object
         private Directory directory;
+        private Analyzer analyzer;
 
         // private constructor to support the singleton model
         private ProfileIndex()
         {
             // the actual file storing all profile data
-            directory = FSDirectory.Open("ContactIndex");
+            directory = FSDirectory.Open(INDEX_NAME);
         }
 
         // return the single instance of ProfileIndex, initializing if necessary
@@ -64,7 +68,7 @@ namespace SearchOutlets.Datastores
         public void InitializeIndex()
         {
             // objects for building the index
-            Analyzer analyzer = new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30);
+            analyzer = new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30);
             IndexWriter writer = new IndexWriter(directory, analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
 
             Dictionary<int, JsonOutlet> outlets = new JsonDataParser<JsonOutlet>().LoadProfileDataMap();
@@ -95,25 +99,79 @@ namespace SearchOutlets.Datastores
         /// <returns></returns>
         public List<Contact> GetAllContacts()
         {
+            return RunQuery(new MatchAllDocsQuery(), false);
+        }
+
+
+        /// <summary>
+        /// Retrieve all contacts from the index matching the given query
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        public List<Contact> ContactSearch(string query)
+        {
+            QueryParser qp = new QueryParser(Lucene.Net.Util.Version.LUCENE_30, ContactField.FIRST_NAME, analyzer);
+            Query q = qp.Parse(query);
+            return RunQuery(q, true);
+        }
+
+
+        /// <summary>
+        /// Run a query against the index
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        public List<Contact> RunQuery(Query query, bool sortResults)
+        {
             IndexSearcher searcher = new IndexSearcher(directory, true); // true means read-only
-            MatchAllDocsQuery queryAll = new MatchAllDocsQuery();
-            TopScoreDocCollector collector = TopScoreDocCollector.Create(100, false); // top 100 results, unsorted
+            TopScoreDocCollector collector = TopScoreDocCollector.Create(100, sortResults); // top 100 results
+            searcher.Search(query, collector);
+
             ScoreDoc[] scoredDocs = collector.TopDocs().ScoreDocs;
 
             // convert the top results to Contact objects, to be displayed at the GUI
-            List<Contact> results = new List<Contact>(scoredDocs.Length);
+            List<Contact> results = ScoreDocs2Contacts(searcher, scoredDocs);
+
+            searcher.Dispose();
+
+            return results;
+        }
+
+
+
+        /// <summary>
+        /// Convert the scored results into a list of Contacts
+        /// </summary>
+        /// <param name="searcher"></param>
+        /// <param name="scoredDocs"></param>
+        /// <returns></returns>
+        private List<Contact> ScoreDocs2Contacts(IndexSearcher searcher, ScoreDoc[] scoredDocs)
+        {
+            List<Contact> contacts = new List<Contact>(scoredDocs.Length);
+
             foreach (ScoreDoc scoreDoc in scoredDocs)
             {
                 Document doc = searcher.Doc(scoreDoc.Doc);
-                Contact contact = new Contact();
-                contact.Name = doc.Get(ContactField.FIRST_NAME) + " " + doc.Get(ContactField.LAST_NAME);
-                contact.Title = doc.Get(ContactField.TITLE);
-                contact.Outlet = doc.Get(ContactField.OUTLET);
-                contact.Profile = doc.Get(ContactField.PROFILE);
-                results.Add(contact);
+                Contact contact = this.Doc2Contact(doc);
+                contacts.Add(contact);
             }
 
-            return results;
+            return contacts;
+        }
+
+        /// <summary>
+        /// Use data from a Document to create a new Contact
+        /// </summary>
+        /// <param name="doc"></param>
+        /// <returns></returns>
+        private Contact Doc2Contact(Document doc)
+        {
+            Contact contact = new Contact();
+            contact.Name = doc.Get(ContactField.FIRST_NAME) + " " + doc.Get(ContactField.LAST_NAME);
+            contact.Title = doc.Get(ContactField.TITLE);
+            contact.Outlet = doc.Get(ContactField.OUTLET);
+            contact.Profile = doc.Get(ContactField.PROFILE);
+            return contact;
         }
     }
 }
