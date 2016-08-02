@@ -7,7 +7,7 @@ namespace SearchOutlets.Controllers
     /// <summary>
     /// Retrieve a profile by given ID
     /// </summary>
-    public class ProfileController : ApiController
+    public class ContactController : ApiController
     {
         private const int ALL_PROFILES = -1;
 
