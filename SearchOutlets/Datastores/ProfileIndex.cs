@@ -11,7 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 
-namespace SearchOutlets.Indexes
+namespace SearchOutlets.Datastores
 {
     /// <summary>
     /// This class wraps the backing index file, analyzer, and other 
