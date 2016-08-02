@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SearchOutlets.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -25,15 +26,15 @@ namespace SearchOutlets.Controllers
             // get all profiles
             if (id == ALL_PROFILES)
             {
-                List<Models.Contact> allProfiles = new List<Models.Contact>(Datastores.ProfileDatastore.Instance.ProfileData.Values);
+                List<Models.Contact> allProfiles = new ProfileDataParser<Models.Contact>().LoadProfileData();
                 return Ok(allProfiles);
             }
             // get the profile for the specified contact ID
             else
             {
                 Models.Contact profile = null;
-                Datastores.ProfileDatastore.Instance.ProfileData.TryGetValue(id, out profile);
-
+                new ProfileDataParser<Models.Contact>().LoadProfileDataMap().TryGetValue(id, out profile);
+                
                 if (profile != null)
                 {
                     return Ok(profile);
