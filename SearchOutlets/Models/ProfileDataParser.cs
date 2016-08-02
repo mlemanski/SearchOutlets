@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace SearchOutlets.Models
 {
     /// <summary>
-    /// A common tag for Contacts and Outlets
+    /// Parse the Contacts and Outlets JSON files into a list or dictionary.
     /// </summary>
     class ProfileDataParser<T> where T : ProfileData
     {
@@ -26,6 +26,7 @@ namespace SearchOutlets.Models
         {
             List<T> data;
 
+            // use the generic type to determine which json file to parse
             string json_path = typeof(T) == typeof(Contact) ? CONTACTS : OUTLETS;
 
             using (StreamReader sr = new StreamReader(json_path))
