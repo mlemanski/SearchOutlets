@@ -22,14 +22,14 @@ namespace SearchOutlets.Controllers
             // get all profiles
             if (id == ALL_PROFILES)
             {
-                List<Contact> allProfiles = new JsonDataParser<Contact>().LoadProfileData();
+                List<JsonContact> allProfiles = new JsonDataParser<JsonContact>().LoadProfileData();
                 return Ok(allProfiles);
             }
             // get the profile for the specified contact ID
             else
             {
-                Contact profile = null;
-                new JsonDataParser<Contact>().LoadProfileDataMap().TryGetValue(id, out profile);
+                JsonContact profile = null;
+                new JsonDataParser<JsonContact>().LoadProfileDataMap().TryGetValue(id, out profile);
                 
                 if (profile != null)
                 {

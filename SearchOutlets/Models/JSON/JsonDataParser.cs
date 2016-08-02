@@ -23,7 +23,7 @@ namespace SearchOutlets.Models.JSON
             List<T> data;
 
             // use the generic type to determine which json file to parse
-            string json_path = typeof(T) == typeof(Contact) ? CONTACTS : OUTLETS;
+            string json_path = typeof(T) == typeof(JsonContact) ? CONTACTS : OUTLETS;
 
             using (StreamReader sr = new StreamReader(json_path))
             {
