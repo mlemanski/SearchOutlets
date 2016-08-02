@@ -3,7 +3,7 @@ using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.Store;
-using SearchOutlets.JSON.Models;
+using SearchOutlets.Models.JSON;
 using System.Collections.Generic;
 
 namespace SearchOutlets.Datastores

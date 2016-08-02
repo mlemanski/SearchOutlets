@@ -1,4 +1,4 @@
-﻿namespace SearchOutlets.JSON.Models
+﻿namespace SearchOutlets.Models.JSON
 {
     /// <summary>
     /// An abstract parent class to avoid duplicating JSON parsing code.

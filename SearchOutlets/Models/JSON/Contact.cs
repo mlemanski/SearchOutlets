@@ -1,4 +1,4 @@
-﻿namespace SearchOutlets.JSON.Models
+﻿namespace SearchOutlets.Models.JSON
 {
     /// <summary>
     /// Internal representation of an item from the Contacts.json file

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace SearchOutlets.JSON.Models
+namespace SearchOutlets.Models.JSON
 {
     /// <summary>
     /// Parse the Contacts and Outlets JSON files into a list or dictionary.

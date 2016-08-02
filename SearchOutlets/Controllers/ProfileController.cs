@@ -1,4 +1,4 @@
-﻿using SearchOutlets.Models;
+﻿using SearchOutlets.Models.JSON;
 using System.Collections.Generic;
 using System.Web.Http;
 
@@ -22,14 +22,14 @@ namespace SearchOutlets.Controllers
             // get all profiles
             if (id == ALL_PROFILES)
             {
-                List<Contact> allProfiles = new ProfileDataParser<Contact>().LoadProfileData();
+                List<Contact> allProfiles = new JsonDataParser<Contact>().LoadProfileData();
                 return Ok(allProfiles);
             }
             // get the profile for the specified contact ID
             else
             {
                 Contact profile = null;
-                new ProfileDataParser<Contact>().LoadProfileDataMap().TryGetValue(id, out profile);
+                new JsonDataParser<Contact>().LoadProfileDataMap().TryGetValue(id, out profile);
                 
                 if (profile != null)
                 {
