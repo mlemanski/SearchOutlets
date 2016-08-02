@@ -41,7 +41,7 @@ namespace SearchOutlets.Datastores
                 if (instance == null)
                 {
                     instance = new ProfileIndex();
-                    instance.LoadProfiles();
+                    instance.InitializeIndex();
                 }
 
                 return instance;
@@ -52,7 +52,7 @@ namespace SearchOutlets.Datastores
         /// <summary>
         /// Load the Contacts and Outlets data into the index
         /// </summary>
-        public void LoadProfiles()
+        public void InitializeIndex()
         {
             Dictionary<int, Outlet> outlets = new ProfileDataParser<Outlet>().LoadProfileDataMap();
 
@@ -68,6 +68,10 @@ namespace SearchOutlets.Datastores
                 d.Add(new Field("profile", contact.Profile, Field.Store.YES, Field.Index.ANALYZED));
                 writer.AddDocument(d);
             }
+
+            writer.Optimize();
+            writer.Flush(true, true, true);
+            writer.Dispose();
         }
     }
 }
