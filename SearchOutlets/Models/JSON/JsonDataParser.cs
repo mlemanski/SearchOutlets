@@ -7,7 +7,7 @@ namespace SearchOutlets.JSON.Models
     /// <summary>
     /// Parse the Contacts and Outlets JSON files into a list or dictionary.
     /// </summary>
-    class ProfileDataParser<T> where T : ProfileData
+    class JsonDataParser<T> where T : JsonData
     {
         private const string JSON_PATH = "C:\\Users\\Matt\\Documents\\Visual Studio 2015\\Projects\\SearchOutlets\\SearchOutlets\\Datastores\\";
         private const string CONTACTS = JSON_PATH + "Contacts.json";

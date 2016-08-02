@@ -3,7 +3,7 @@ using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.Store;
-using SearchOutlets.Models;
+using SearchOutlets.JSON.Models;
 using System.Collections.Generic;
 
 namespace SearchOutlets.Datastores
@@ -54,9 +54,9 @@ namespace SearchOutlets.Datastores
         /// </summary>
         public void InitializeIndex()
         {
-            Dictionary<int, Outlet> outlets = new ProfileDataParser<Outlet>().LoadProfileDataMap();
+            Dictionary<int, Outlet> outlets = new JsonDataParser<Outlet>().LoadProfileDataMap();
 
-            foreach (Contact contact in new ProfileDataParser<Contact>().LoadProfileData())
+            foreach (Contact contact in new JsonDataParser<Contact>().LoadProfileData())
             {
                 Document d = new Document();
                 d.Add(new Field("id", contact.Id.ToString(), Field.Store.NO, Field.Index.NO));
@@ -73,5 +73,8 @@ namespace SearchOutlets.Datastores
             writer.Flush(true, true, true);
             writer.Dispose();
         }
+
+
+        public List<Document>
     }
 }
