@@ -1,9 +1,12 @@
 ﻿using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
+using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.Store;
+using SearchOutlets.Datastores;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 
@@ -55,7 +58,20 @@ namespace SearchOutlets.Indexes
         /// </summary>
         public void LoadProfiles()
         {
+            Dictionary<int, Models.Outlet> outlets = ProfileDatastore.Instance.OutletData;
 
+            foreach (Models.Contact contact in ProfileDatastore.Instance.ProfileData.Values)
+            {
+                Document d = new Document();
+                d.Add(new Field("id", contact.Id.ToString(), Field.Store.NO, Field.Index.NO));
+                d.Add(new Field("outletId", contact.OutletId.ToString(), Field.Store.NO, Field.Index.NO));
+                d.Add(new Field("outlet", outlets[contact.OutletId].Name, Field.Store.YES, Field.Index.ANALYZED));
+                d.Add(new Field("firstName", contact.FirstName, Field.Store.YES, Field.Index.NOT_ANALYZED));
+                d.Add(new Field("lastName", contact.LastName, Field.Store.YES, Field.Index.NOT_ANALYZED));
+                d.Add(new Field("title", contact.Title, Field.Store.YES, Field.Index.ANALYZED));
+                d.Add(new Field("profile", contact.Profile, Field.Store.YES, Field.Index.ANALYZED));
+                writer.AddDocument(d);
+            }
         }
     }
 }
