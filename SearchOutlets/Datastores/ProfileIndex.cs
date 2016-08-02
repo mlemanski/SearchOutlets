@@ -17,7 +17,7 @@ namespace SearchOutlets.Datastores
     /// </summary>
     public class ProfileIndex
     {
-        private const string INDEX_NAME = "ContactIndex";
+        private const string INDEX_NAME = "\\ContactIndex";
 
         private static class ContactField
         {
@@ -77,7 +77,7 @@ namespace SearchOutlets.Datastores
             {
                 Document d = new Document();
                 d.Add(new Field(ContactField.ID,         contact.Id.ToString(),          Field.Store.YES, Field.Index.NO));
-                d.Add(new Field(ContactField.OUTLET_ID,  contact.OutletId.ToString(),    Field.Store.NO,  Field.Index.NO));
+                d.Add(new Field(ContactField.OUTLET_ID,  contact.OutletId.ToString(),    Field.Store.YES, Field.Index.NO));
                 d.Add(new Field(ContactField.OUTLET,     outlets[contact.OutletId].Name, Field.Store.YES, Field.Index.ANALYZED));
                 d.Add(new Field(ContactField.FIRST_NAME, contact.FirstName,              Field.Store.YES, Field.Index.NOT_ANALYZED));
                 d.Add(new Field(ContactField.LAST_NAME,  contact.LastName,               Field.Store.YES, Field.Index.NOT_ANALYZED));
@@ -104,13 +104,60 @@ namespace SearchOutlets.Datastores
 
 
         /// <summary>
-        /// Retrieve all contacts from the index matching the given query
+        /// Try to find a profile matching the exact user ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public Contact IdQuery(int id)
+        {
+            TermQuery tq = new TermQuery(new Term(ContactField.ID, id.ToString()));
+
+            List<Contact> results = RunQuery(tq, true);
+            if (results.Count > 0)
+            {
+                return results[0];
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// Retrieve all contacts from the index matching the given name query
         /// </summary>
         /// <param name="query"></param>
         /// <returns></returns>
         public List<Contact> ContactSearch(string query)
         {
-            QueryParser qp = new QueryParser(Lucene.Net.Util.Version.LUCENE_30, ContactField.FIRST_NAME, analyzer);
+            // match first and last name fields
+            MultiFieldQueryParser qp = new MultiFieldQueryParser(Lucene.Net.Util.Version.LUCENE_30,
+                                                                 new string[]{ ContactField.FIRST_NAME, ContactField.LAST_NAME },
+                                                                 analyzer);
+            Query q = qp.Parse(query);
+            return RunQuery(q, true);
+        }
+
+
+
+        /// <summary>
+        /// Search across all searchable fields to identify contacts that best match the given query.
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        public List<Contact> FullSearch(string query)
+        {
+            MultiFieldQueryParser qp = new MultiFieldQueryParser(Lucene.Net.Util.Version.LUCENE_30,
+                                                                 new string[]
+                                                                 {
+                                                                     ContactField.FIRST_NAME,
+                                                                     ContactField.LAST_NAME,
+                                                                     ContactField.TITLE,
+                                                                     ContactField.OUTLET,
+                                                                     ContactField.PROFILE
+                                                                 },
+                                                                 analyzer);
             Query q = qp.Parse(query);
             return RunQuery(q, true);
         }

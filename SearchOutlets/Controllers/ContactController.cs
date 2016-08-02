@@ -1,4 +1,6 @@
-﻿using SearchOutlets.Models.JSON;
+﻿using SearchOutlets.Datastores;
+using SearchOutlets.Models;
+using SearchOutlets.Models.JSON;
 using System.Collections.Generic;
 using System.Web.Http;
 
@@ -22,14 +24,13 @@ namespace SearchOutlets.Controllers
             // get all profiles
             if (id == ALL_PROFILES)
             {
-                List<JsonContact> allProfiles = new JsonDataParser<JsonContact>().LoadProfileData();
-                return Ok(allProfiles);
+                List<Contact> allContacts = ProfileIndex.Instance.GetAllContacts();
+                return Ok(allContacts);
             }
             // get the profile for the specified contact ID
             else
             {
-                JsonContact profile = null;
-                new JsonDataParser<JsonContact>().LoadProfileDataMap().TryGetValue(id, out profile);
+                Contact profile = ProfileIndex.Instance.IdQuery(id);
                 
                 if (profile != null)
                 {
