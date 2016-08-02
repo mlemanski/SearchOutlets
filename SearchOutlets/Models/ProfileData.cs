@@ -11,12 +11,6 @@ namespace SearchOutlets.Models
     /// </summary>
     public abstract class ProfileData
     {
-        protected int id;
-
-        public int Id
-        {
-            get;
-            set;
-        }
+        public int Id { get; set; }
     }
 }

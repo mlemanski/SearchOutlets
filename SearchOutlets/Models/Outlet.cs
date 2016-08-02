@@ -10,22 +10,6 @@ namespace SearchOutlets.Models
     /// </summary>
     public class Outlet : ProfileData
     {
-        //private int id;
-        private string name;
-
-
-        // properties
-                //public int Id
-        //{
-        //    get { return id; }
-        //    set { id = value; }
-        //}
-
-
-        public string Name
-        {
-            get { return name; }
-            set { name = value; }
-        }
+        public string Name { get; set; }
     }
 }
