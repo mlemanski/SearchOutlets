@@ -1,4 +1,7 @@
-﻿using Lucene.Net.Store;
+﻿using Lucene.Net.Analysis;
+using Lucene.Net.Analysis.Standard;
+using Lucene.Net.Index;
+using Lucene.Net.Store;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,18 +10,29 @@ using System.Web;
 namespace SearchOutlets.Indexes
 {
     /// <summary>
-    /// This class controls all access to the profile index.
-    /// 
-    /// This exercise contains a pretty small amount of text data, so it
-    /// should be fine to just keep in memory. If there was more data we
-    /// could use the file system-based index.
+    /// This class wraps the backing index file, analyzer, and other 
+    /// associated files.
     /// </summary>
     public class ProfileIndex
     {
+        // the single instance
         private static ProfileIndex instance;
 
+
+        // Lucene index objects
+        private Directory directory;
+        private Analyzer analyzer;
+        private IndexWriter writer;
+
         // private constructor to support the singleton model
-        private ProfileIndex() { }
+        private ProfileIndex()
+        {
+            // the actual file storing all profile data
+            directory = FSDirectory.Open("ProfileIndex.db");
+
+            analyzer = new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30);
+            writer = new IndexWriter(directory, analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
+        }
 
         // return the single instance of ProfileIndex, initializing if necessary
         public static ProfileIndex Instance
@@ -28,6 +42,7 @@ namespace SearchOutlets.Indexes
                 if (instance == null)
                 {
                     instance = new ProfileIndex();
+                    instance.LoadProfiles();
                 }
 
                 return instance;
@@ -35,9 +50,12 @@ namespace SearchOutlets.Indexes
         }
 
 
+        /// <summary>
+        /// Load the Contacts and Outlets data into the index
+        /// </summary>
+        public void LoadProfiles()
+        {
 
-        // the index storing all profile data
-        private Directory index = new RAMDirectory();
-
+        }
     }
 }
