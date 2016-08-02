@@ -22,14 +22,14 @@ namespace SearchOutlets.Controllers
             // get all profiles
             if (id == ALL_PROFILES)
             {
-                List<Models.Contact> allProfiles = new ProfileDataParser<Models.Contact>().LoadProfileData();
+                List<Contact> allProfiles = new ProfileDataParser<Contact>().LoadProfileData();
                 return Ok(allProfiles);
             }
             // get the profile for the specified contact ID
             else
             {
-                Models.Contact profile = null;
-                new ProfileDataParser<Models.Contact>().LoadProfileDataMap().TryGetValue(id, out profile);
+                Contact profile = null;
+                new ProfileDataParser<Contact>().LoadProfileDataMap().TryGetValue(id, out profile);
                 
                 if (profile != null)
                 {
