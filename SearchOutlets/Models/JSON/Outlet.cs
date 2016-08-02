@@ -1,4 +1,4 @@
-﻿namespace SearchOutlets.Models
+﻿namespace SearchOutlets.JSON.Models
 {
     /// <summary>
     /// Internal representation of an item from the Outlets.json file
