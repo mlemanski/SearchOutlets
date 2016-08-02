@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace SearchOutlets.Models
+﻿namespace SearchOutlets.Models
 {
     /// <summary>
     /// A contact's profile data that will displayed in the GUI. Different
