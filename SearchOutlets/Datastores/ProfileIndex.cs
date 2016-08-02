@@ -20,17 +20,12 @@ namespace SearchOutlets.Datastores
 
         // Lucene index objects
         private Directory directory;
-        private Analyzer analyzer;
-        private IndexWriter writer;
 
         // private constructor to support the singleton model
         private ProfileIndex()
         {
             // the actual file storing all profile data
             directory = FSDirectory.Open("ProfileIndex.db");
-
-            analyzer = new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30);
-            writer = new IndexWriter(directory, analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
         }
 
         // return the single instance of ProfileIndex, initializing if necessary
@@ -54,6 +49,10 @@ namespace SearchOutlets.Datastores
         /// </summary>
         public void InitializeIndex()
         {
+            // objects for building the index
+            Analyzer analyzer = new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30);
+            IndexWriter writer = new IndexWriter(directory, analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
+
             Dictionary<int, Outlet> outlets = new JsonDataParser<Outlet>().LoadProfileDataMap();
 
             foreach (Contact contact in new JsonDataParser<Contact>().LoadProfileData())
@@ -75,6 +74,14 @@ namespace SearchOutlets.Datastores
         }
 
 
-        public List<Document>
+
+        /// <summary>
+        /// Retrieve all contacts from the index
+        /// </summary>
+        /// <returns></returns>
+        public List<Contact> GetAllContacts()
+        {
+            return null;
+        }
     }
 }
