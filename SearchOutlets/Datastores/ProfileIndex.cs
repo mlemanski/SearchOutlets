@@ -25,7 +25,7 @@ namespace SearchOutlets.Datastores
         private ProfileIndex()
         {
             // the actual file storing all profile data
-            directory = FSDirectory.Open("ProfileIndex.db");
+            directory = FSDirectory.Open("ContactIndex");
         }
 
         // return the single instance of ProfileIndex, initializing if necessary
@@ -58,7 +58,7 @@ namespace SearchOutlets.Datastores
             foreach (Contact contact in new JsonDataParser<Contact>().LoadProfileData())
             {
                 Document d = new Document();
-                d.Add(new Field("id", contact.Id.ToString(), Field.Store.NO, Field.Index.NO));
+                d.Add(new Field("id", contact.Id.ToString(), Field.Store.YES, Field.Index.NO));
                 d.Add(new Field("outletId", contact.OutletId.ToString(), Field.Store.NO, Field.Index.NO));
                 d.Add(new Field("outlet", outlets[contact.OutletId].Name, Field.Store.YES, Field.Index.ANALYZED));
                 d.Add(new Field("firstName", contact.FirstName, Field.Store.YES, Field.Index.NOT_ANALYZED));
@@ -81,7 +81,7 @@ namespace SearchOutlets.Datastores
         /// <returns></returns>
         public List<Contact> GetAllContacts()
         {
-            return null;
+            directory.ListAll();
         }
     }
 }
