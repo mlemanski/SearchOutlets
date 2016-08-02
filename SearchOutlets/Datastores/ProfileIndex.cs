@@ -3,13 +3,7 @@ using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.Store;
-using Newtonsoft.Json;
-using SearchOutlets.Datastores;
-using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Web;
 
 namespace SearchOutlets.Datastores
 {
@@ -24,7 +18,7 @@ namespace SearchOutlets.Datastores
 
 
         // Lucene index objects
-        private Lucene.Net.Store.Directory directory;
+        private Directory directory;
         private Analyzer analyzer;
         private IndexWriter writer;
 
