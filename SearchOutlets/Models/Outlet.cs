@@ -8,19 +8,19 @@ namespace SearchOutlets.Models
     /// <summary>
     /// Internal representation of an item from the Outlets.json file
     /// </summary>
-    public class Outlet
+    public class Outlet : ProfileData
     {
-        private int id;
+        //private int id;
         private string name;
 
 
         // properties
-        
-        public int Id
-        {
-            get { return id; }
-            set { id = value; }
-        }
+                //public int Id
+        //{
+        //    get { return id; }
+        //    set { id = value; }
+        //}
+
 
         public string Name
         {

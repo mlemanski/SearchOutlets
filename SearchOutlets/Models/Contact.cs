@@ -8,9 +8,9 @@ namespace SearchOutlets.Models
     /// <summary>
     /// Internal representation of an item from the Contacts.json file
     /// </summary>
-    public class Contact
+    public class Contact : ProfileData
     {
-        private int id;
+        //private int id;
         private int outletId; // only 1 Outlet
         private string firstName;
         private string lastName;
@@ -20,11 +20,11 @@ namespace SearchOutlets.Models
 
         // properties
 
-        public int Id
-        {
-            get { return id; }
-            set { id = value; }
-        }
+        //public int Id
+        //{
+        //    get { return id; }
+        //    set { id = value; }
+        //}
 
         public int OutletId
         {
