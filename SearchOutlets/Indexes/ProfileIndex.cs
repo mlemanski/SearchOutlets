@@ -3,6 +3,7 @@ using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.Store;
+using Newtonsoft.Json;
 using SearchOutlets.Datastores;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ namespace SearchOutlets.Indexes
 
 
         // Lucene index objects
-        private Directory directory;
+        private Lucene.Net.Store.Directory directory;
         private Analyzer analyzer;
         private IndexWriter writer;
 
@@ -58,9 +59,9 @@ namespace SearchOutlets.Indexes
         /// </summary>
         public void LoadProfiles()
         {
-            Dictionary<int, Models.Outlet> outlets = ProfileDatastore.Instance.OutletData;
+            Dictionary<int, Models.Outlet> outlets = new Models.ProfileDataParser<Models.Outlet>().LoadProfileDataMap();
 
-            foreach (Models.Contact contact in ProfileDatastore.Instance.ProfileData.Values)
+            foreach (Models.Contact contact in new Models.ProfileDataParser<Models.Contact>().LoadProfileData())
             {
                 Document d = new Document();
                 d.Add(new Field("id", contact.Id.ToString(), Field.Store.NO, Field.Index.NO));
