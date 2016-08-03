@@ -76,7 +76,7 @@ namespace SearchOutlets.Datastores
             foreach (JsonContact contact in new JsonDataParser<JsonContact>().LoadProfileData())
             {
                 Document d = new Document();
-                d.Add(new Field(ContactField.ID,         contact.Id.ToString(),          Field.Store.YES, Field.Index.NO));
+                d.Add(new Field(ContactField.ID,         contact.Id.ToString(),          Field.Store.YES, Field.Index.NOT_ANALYZED));
                 d.Add(new Field(ContactField.OUTLET_ID,  contact.OutletId.ToString(),    Field.Store.YES, Field.Index.NO));
                 d.Add(new Field(ContactField.OUTLET,     outlets[contact.OutletId].Name, Field.Store.YES, Field.Index.ANALYZED));
                 d.Add(new Field(ContactField.FIRST_NAME, contact.FirstName,              Field.Store.YES, Field.Index.NOT_ANALYZED));
