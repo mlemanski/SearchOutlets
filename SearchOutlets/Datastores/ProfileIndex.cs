@@ -69,7 +69,7 @@ namespace SearchOutlets.Datastores
         {
             // objects for building the index
             analyzer = new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30);
-            IndexWriter writer = new IndexWriter(directory, analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
+            IndexWriter writer = new IndexWriter(directory, analyzer, true, IndexWriter.MaxFieldLength.UNLIMITED);
 
             Dictionary<int, JsonOutlet> outlets = new JsonDataParser<JsonOutlet>().LoadProfileDataMap();
 
