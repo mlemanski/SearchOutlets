@@ -11,7 +11,7 @@ namespace SearchOutlets.Controllers
     /// </summary>
     public class ContactController : ApiController
     {
-        private const int ALL_PROFILES = -1;
+        private const int ALL_CONTACTS = -1;
 
         /// <summary>
         /// Retrieve the Contact matching the given identifier, if any such Contact exists
@@ -19,10 +19,10 @@ namespace SearchOutlets.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        public IHttpActionResult Profile(int id = ALL_PROFILES)
+        public IHttpActionResult GetContact(int id = ALL_CONTACTS)
         {
-            // get all profiles
-            if (id == ALL_PROFILES)
+            // get all contacts
+            if (id == ALL_CONTACTS)
             {
                 List<Contact> allContacts = ProfileIndex.Instance.GetAllContacts();
                 return Ok(allContacts);

@@ -8,6 +8,7 @@ namespace SearchOutlets
         {
             config.MapHttpAttributeRoutes();
 
+            // display all profiles or a single profile, without searching
             config.Routes.MapHttpRoute(
                 name: "SearchOutletsApi",
                 routeTemplate: "{controller}/{id}",
