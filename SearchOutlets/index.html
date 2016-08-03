@@ -16,36 +16,53 @@
     <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
     <script type="text/javascript">
 
-      $(function() {
-        $('#Button1').click(getContacts);
-      });
-
-      function getContacts() {
-        $.ajax({
-          type: "GET",
-          url: "/search",
-          data: { query: $("#Text1").val() },
-          contentType: "application/json; charset=utf-8",
-          dataType: "json",
-          success: function (response) {
-              var contacts = response;
-              $('#output').empty();
-              $.each(contacts, function (index, contact) {
-                  $('#output').append(
-                      '<p>' +
-                        '<b>Name:</b> ' + contact.Name + '<br/>' +
-                        '<b>Title:</b> ' + contact.Title + '<br/>' +
-                        '<b>Outlet:</b> ' + contact.Outlet + '<br/>' +
-                        '<b>Profile:</b> ' + contact.Profile + '<br/>' +
-                      '</p>'
-                    );
-              });
-          },
-          failure: function (msg) {
-            $('#output').text(msg);
-          }
+        $(function() {
+            $('#Button1').click(getContacts);
         });
-      }
+
+        function displayContacts(response) {
+            var contacts = response;
+            $('#output').empty();
+            $.each(contacts, function (index, contact) {
+                $('#output').append(
+                    '<p>' +
+                    '<b>Name:</b> ' + contact.Name + '<br/>' +
+                    '<b>Title:</b> ' + contact.Title + '<br/>' +
+                    '<b>Outlet:</b> ' + contact.Outlet + '<br/>' +
+                    '<b>Profile:</b> ' + contact.Profile + '<br/>' +
+                    '</p>'
+                );
+            });
+        }
+
+        function getContacts() {
+            // the value of the text field
+            var searchTerm = $("#Text1").val();
+            
+            // default case: no search term returns all contacts
+            var url = '/contact';
+            var data = { };
+            
+            // if the text area is not empty, perform a search
+            if (searchTerm) {
+                url = "/search";
+                data = { query: searchTerm };
+            }
+            
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: data,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    displayContacts(response);
+                },
+                failure: function (msg) {
+                    $('#output').text(msg);
+                }
+            });
+        }
     </script>
 
 </head>
