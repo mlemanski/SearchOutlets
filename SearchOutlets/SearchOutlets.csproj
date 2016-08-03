@@ -110,7 +110,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Datastores\ProfileIndex.cs" />
-    <Compile Include="Models\ContactSnippet.cs" />
     <Compile Include="Models\JSON\JsonContact.cs" />
     <Compile Include="Models\JSON\JsonOutlet.cs" />
     <Compile Include="Models\JSON\JsonData.cs" />
