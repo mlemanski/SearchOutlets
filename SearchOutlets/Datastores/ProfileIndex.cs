@@ -12,12 +12,11 @@ using System.Collections.Generic;
 namespace SearchOutlets.Datastores
 {
     /// <summary>
-    /// This class wraps the backing index file, analyzer, and other 
-    /// associated files.
+    /// This class provides access to the Lucene index API
     /// </summary>
     public class ProfileIndex
     {
-        private const string INDEX_NAME = "\\ContactIndex";
+        public const string INDEX_NAME = "\\SearchOutletsIndex";
 
         private static class ContactField
         {
@@ -177,7 +176,7 @@ namespace SearchOutlets.Datastores
             ScoreDoc[] scoredDocs = collector.TopDocs().ScoreDocs;
 
             // convert the top results to Contact objects, to be displayed at the GUI
-            List<Contact> results = ScoreDocs2Contacts(searcher, scoredDocs);
+            List<Contact> results = ScoreDocsToContacts(searcher, scoredDocs);
 
             searcher.Dispose();
 
@@ -192,14 +191,14 @@ namespace SearchOutlets.Datastores
         /// <param name="searcher"></param>
         /// <param name="scoredDocs"></param>
         /// <returns></returns>
-        private List<Contact> ScoreDocs2Contacts(IndexSearcher searcher, ScoreDoc[] scoredDocs)
+        private List<Contact> ScoreDocsToContacts(IndexSearcher searcher, ScoreDoc[] scoredDocs)
         {
             List<Contact> contacts = new List<Contact>(scoredDocs.Length);
 
             foreach (ScoreDoc scoreDoc in scoredDocs)
             {
                 Document doc = searcher.Doc(scoreDoc.Doc);
-                Contact contact = this.Doc2Contact(doc);
+                Contact contact = this.DocumentToContact(doc);
                 contacts.Add(contact);
             }
 
@@ -211,7 +210,7 @@ namespace SearchOutlets.Datastores
         /// </summary>
         /// <param name="doc"></param>
         /// <returns></returns>
-        private Contact Doc2Contact(Document doc)
+        private Contact DocumentToContact(Document doc)
         {
             Contact contact = new Contact();
             contact.Name = doc.Get(ContactField.FIRST_NAME) + " " + doc.Get(ContactField.LAST_NAME);
