@@ -8,6 +8,7 @@ using Lucene.Net.Store;
 using SearchOutlets.Models;
 using SearchOutlets.Models.JSON;
 using System.Collections.Generic;
+using System.Web;
 
 namespace SearchOutlets.Datastores
 {
@@ -16,7 +17,8 @@ namespace SearchOutlets.Datastores
     /// </summary>
     public class ProfileIndex
     {
-        public const string INDEX_NAME = "\\SearchOutletsIndex";
+        private static readonly string PROJECT_ROOT = HttpContext.Current.Request.PhysicalApplicationPath;
+        public static string INDEX_NAME = System.IO.Path.Combine(PROJECT_ROOT, "SearchOutletsIndex");
 
         private static class ContactField
         {
