@@ -16,6 +16,13 @@
     <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
     <script type="text/javascript">
 
+        // immediately request that the indexing be initialized
+        $.ajax({
+            type: 'GET',
+            url: '/initializeindexing',
+        });
+
+
         $(function() {
             $('#Button1').click(getContacts);
         });
@@ -37,7 +44,7 @@
 
         function getContacts() {
             // the value of the text field
-            var searchTerm = $("#Text1").val();
+            var searchTerm = $('#Text1').val();
             
             // default case: no search term returns all contacts
             var url = '/contact';
@@ -45,16 +52,16 @@
             
             // if the text area is not empty, perform a search
             if (searchTerm) {
-                url = "/search";
+                url = '/search';
                 data = { query: searchTerm };
             }
             
             $.ajax({
-                type: "GET",
+                type: 'GET',
                 url: url,
                 data: data,
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
                 success: function (response) {
                     displayContacts(response);
                 },
