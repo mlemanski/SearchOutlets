@@ -1,56 +1,70 @@
 ﻿<!DOCTYPE html>
+
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Search Outlets</title>
-    <meta charset="utf-8" />
     <style type="text/css">
-        #query {
-            width: 275px;
+        #Text1 {
+            width: 298px;
         }
-        #q_result {
-            height: 341px;
+        #Button1 {
+            width: 76px;
         }
     </style>
-</head>
-<body style="height: 396px">
-    <div>
-        <input type="text" id="query" size="25" />
-        <input type="button" value="Search" onclick="find();" />
-        </div>
+
 
     <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
-    <script>
+    <script type="text/javascript">
 
+      $(function() {
+        $('#Button1').click(getContacts);
+      });
 
-    var profiles_uri = 'api/profiles';
-
-    $(document).ready(function () {
-      // Send an AJAX request
-      $.getJSON(profiles_uri)
-          .done(function (data) {
-            // On success, 'data' contains a list of profiles.
-            $.each(data, function (key, item) {
-              // Add a list item for the product.
-              $('<li>', { text: formatItem(item) }).appendTo($('#q_result'));
-            });
-          });
-    });
-
-    function formatItem(item) {
-      return item.Name + ': $' + item.Price;
-    }
-
-    function find() {
-      var id = $('#query').val();
-      $.getJSON(profiles_uri + '/' + id)
-          .done(function (data) {
-            $('#q_result').text(formatItem(data));
-          })
-          .fail(function (jqXHR, textStatus, err) {
-            $('#q_result').text('Error: ' + err);
-          });
-    }
+      function getContacts() {
+        $.ajax({
+          type: "GET",
+          url: "/search",
+          data: { query: $("#Text1").val() },
+          contentType: "application/json; charset=utf-8",
+          dataType: "json",
+          success: function (response) {
+              var contacts = response;
+              $('#output').empty();
+              $.each(contacts, function (index, contact) {
+                  $('#output').append(
+                      '<p>' +
+                        '<b>Name:</b> ' + contact.Name + '<br/>' +
+                        '<b>Title:</b> ' + contact.Title + '<br/>' +
+                        '<b>Outlet:</b> ' + contact.Outlet + '<br/>' +
+                        '<b>Profile:</b> ' + contact.Profile + '<br/>' +
+                      '</p>'
+                    );
+              });
+          },
+          failure: function (msg) {
+            $('#output').text(msg);
+          }
+        });
+      }
     </script>
-        <p id="q_result" />
-    </body>
+
+</head>
+<body>
+    <form id="form1">
+
+        <div id="title" style="font-family: Arial, Helvetica, sans-serif; font-size: x-large">
+
+            Search Outlets
+
+        </div>
+
+        <div id="search">
+            <input id="Text1" type="text" />
+            <input id="Button1" type="button" value="Search" /><br />
+        </div>
+
+        <div id="output" style="font-family: Arial, Helvetica, sans-serif;">
+        </div>
+    </form>
+</body>
 </html>
