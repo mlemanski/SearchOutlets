@@ -19,7 +19,7 @@ namespace SearchOutlets.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        public IHttpActionResult GetContact(int id = ALL_CONTACTS)
+        public IHttpActionResult Contact(int id = ALL_CONTACTS)
         {
             // get all contacts
             if (id == ALL_CONTACTS)
