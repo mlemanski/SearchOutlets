@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
+using SearchOutlets.Datastores;
 using System.Collections.Generic;
 using System.IO;
+using System.Web;
 
 namespace SearchOutlets.Models.JSON
 {
@@ -9,9 +11,9 @@ namespace SearchOutlets.Models.JSON
     /// </summary>
     class JsonDataParser<T> where T : JsonData
     {
-        private const string JSON_PATH = "C:\\Users\\Matt\\Documents\\Visual Studio 2015\\Projects\\SearchOutlets\\SearchOutlets\\Datastores\\";
-        private const string CONTACTS = JSON_PATH + "Contacts.json";
-        private const string OUTLETS = JSON_PATH + "Outlets.json";
+        private static readonly string JSON_PATH = Path.Combine(HttpContext.Current.Request.PhysicalApplicationPath, "App_Data");
+        private static readonly string CONTACTS = Path.Combine(JSON_PATH, "Contacts.json");
+        private static readonly string OUTLETS = Path.Combine(JSON_PATH, "Outlets.json");
 
 
         /// <summary>
@@ -25,11 +27,8 @@ namespace SearchOutlets.Models.JSON
             // use the generic type to determine which json file to parse
             string json_path = typeof(T) == typeof(JsonContact) ? CONTACTS : OUTLETS;
 
-            using (StreamReader sr = new StreamReader(json_path))
-            {
-                string json = sr.ReadToEnd();
-                data = JsonConvert.DeserializeObject<List<T>>(json);
-            }
+            StreamReader sr = new StreamReader(json_path);
+            data = JsonConvert.DeserializeObject<List<T>>(sr.ReadToEnd());
 
             return data;
         }
