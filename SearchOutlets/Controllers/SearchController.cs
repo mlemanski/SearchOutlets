@@ -1,4 +1,7 @@
-﻿using System.Web.Http;
+﻿using SearchOutlets.Datastores;
+using SearchOutlets.Models;
+using System.Collections.Generic;
+using System.Web.Http;
 
 namespace SearchOutlets.Controllers
 {
@@ -7,6 +10,21 @@ namespace SearchOutlets.Controllers
     /// </summary>
     public class SearchController : ApiController
     {
+        /// <summary>
+        /// Perform a string query on all fields in the contact's profile
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public IHttpActionResult Search(string query = "")
+        {
+            if (query.Length > 0)
+            {
+                List<Contact> contacts = ProfileIndex.Instance.FullSearch(query);
+                return Ok(contacts);
+            }
 
+            return Ok();
+        }
     }
 }
