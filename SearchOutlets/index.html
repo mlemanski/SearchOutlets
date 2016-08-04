@@ -46,12 +46,12 @@
 
         // display each result of the query
         // an empty search returns all results
-        function displayContacts(response, expectEmptyResult) {
+        function displayContacts(response, searchTerm) {
             var contacts = response;
 
             $('#output').empty();
-            if (!expectEmptyResult && contacts.length == 0  ) {
-                $('#output').text('Search returned no results');
+            if (searchTerm && contacts.length == 0  ) {
+                $('#output').text('Search returned no results for \'' + searchTerm + '\'');
             }
 
             // add each contact to the output
@@ -80,13 +80,11 @@
             // default case: no search term returns all contacts
             var url = '/contact';
             var data = {};
-            var expectEmptyResult = true;
             
             // if the text area is not empty, perform a search
             if (searchTerm) {
                 url = '/search';
                 data = { query: searchTerm };
-                expectEmptyResult = false;
             }
             
             $.ajax({
@@ -96,7 +94,7 @@
                 contentType: 'application/json; charset=utf-8',
                 dataType: 'json',
                 success: function (response) {
-                    displayContacts(response, expectEmptyResult);
+                    displayContacts(response, searchTerm);
                 },
                 failure: function (msg) {
                     $('#output').text(msg);
