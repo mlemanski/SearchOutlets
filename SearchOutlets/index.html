@@ -4,32 +4,57 @@
 <head>
     <title>Search Outlets</title>
     <style type="text/css">
-        #Text1 {
+        #SearchText {
             width: 298px;
         }
-        #Button1 {
+        #SearchButton {
             width: 76px;
         }
     </style>
 
 
-    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+    <script src="scripts/jquery-2.0.3.min.js"></script>
     <script type="text/javascript">
 
         // immediately request that the indexing be initialized
         $.ajax({
             type: 'GET',
             url: '/initializeindexing',
+            success: function (response) {
+                $('#output').html('<i>Done initializing</i>');
+            }
         });
 
+        function enterKeyPress(e) {
+            var key = e.which;
+            if (key == 13) { // enter button
+                getContacts();
+                return false;
+            }
+        }
 
         $(function() {
-            $('#Button1').click(getContacts);
+            $('#SearchButton').click(getContacts);
+
+            // on 'enter' execute the search
+            $(document).keypress(enterKeyPress);
+            $('#SearchText').keypress(enterKeyPress);
+
+            // set focus to the search field
+            $('#SearchText').focus();
         });
 
-        function displayContacts(response) {
+        // display each result of the query
+        // an empty search returns all results
+        function displayContacts(response, expectEmptyResult) {
             var contacts = response;
+
             $('#output').empty();
+            if (!expectEmptyResult && contacts.length == 0  ) {
+                $('#output').text('Search returned no results');
+            }
+
+            // add each contact to the output
             $.each(contacts, function (index, contact) {
                 $('#output').append(
                     '<p>' +
@@ -40,20 +65,28 @@
                     '</p>'
                 );
             });
+
+            // reset focus
+            $('#SearchText').focus();
         }
 
+
+        // get contacts from the server using the given search term
+        // an empty search returns all results
         function getContacts() {
             // the value of the text field
-            var searchTerm = $('#Text1').val();
+            var searchTerm = $('#SearchText').val();
             
             // default case: no search term returns all contacts
             var url = '/contact';
-            var data = { };
+            var data = {};
+            var expectEmptyResult = true;
             
             // if the text area is not empty, perform a search
             if (searchTerm) {
                 url = '/search';
                 data = { query: searchTerm };
+                expectEmptyResult = false;
             }
             
             $.ajax({
@@ -63,7 +96,7 @@
                 contentType: 'application/json; charset=utf-8',
                 dataType: 'json',
                 success: function (response) {
-                    displayContacts(response);
+                    displayContacts(response, expectEmptyResult);
                 },
                 failure: function (msg) {
                     $('#output').text(msg);
@@ -83,11 +116,12 @@
         </div>
 
         <div id="search">
-            <input id="Text1" type="text" />
-            <input id="Button1" type="button" value="Search" /><br />
+            <input id="SearchText" type="text" />
+            <input id="SearchButton" type="button" value="Search" /><br />
         </div>
 
         <div id="output" style="font-family: Arial, Helvetica, sans-serif;">
+            <i>Initializing...</i>
         </div>
     </form>
 </body>
